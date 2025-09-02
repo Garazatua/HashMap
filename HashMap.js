@@ -123,7 +123,7 @@ class LinkedList {
     return false;
   }
 
-  find(value) {
+  findNodeIndexByValue(value) {
     let currentNode = this.head;
     let index = 0;
     while (currentNode) {
@@ -141,6 +141,17 @@ class LinkedList {
     while (current) {
       if (current.key === key) return current;
       current = current.next;
+    }
+    return null;
+  }
+
+  findNodeIndexByKey(key) {
+    let current = this.head;
+    let index = 0;
+    while (current) {
+      if (current.key === key) return index;
+      current = current.next;
+      index++;
     }
     return null;
   }
@@ -259,18 +270,91 @@ class HashMap {
       else return false;
     }
   }
+
+  remove(key) {
+    let index = this.hash(key);
+    if (index < 0 || index >= this.capacity) {
+      throw new Error("Trying to access index out of bounds");
+    }
+    if (!this.buckets[index]) {
+      return false;
+    } else {
+      const list = this.buckets[index];
+      const nodeIndex = list.findNodeIndexByKey(key);
+      if (nodeIndex === null) return false;
+      let ok = list.removeAt(nodeIndex);
+      if (ok) {
+        this.size--;
+        return true;
+      }
+      return false;
+    }
+  }
+  length() {
+    return this.size;
+  }
+
+  clear() {
+    const emptyArr = new Array(this.capacity);
+    this.buckets = emptyArr;
+    this.size = 0;
+  }
+
+  keys() {
+    let keys = [];
+    for (let i = 0; i < this.buckets.length; i++) {
+      const bucket = this.buckets[i];
+      if (!bucket) continue;
+      let currentNode = bucket.head;
+      while (currentNode) {
+        keys.push(currentNode.key);
+        currentNode = currentNode.next;
+      }
+    }
+    return keys;
+  }
+
+  values() {
+    let values = [];
+    for (let i = 0; i < this.buckets.length; i++) {
+      const bucket = this.buckets[i];
+      if (!bucket) continue;
+      let currentNode = bucket.head;
+      while (currentNode) {
+        values.push(currentNode.value);
+        currentNode = currentNode.next;
+      }
+    }
+    return values;
+  }
+
+  entries() {
+    let entries = [];
+    for (let i = 0; i < this.buckets.length; i++) {
+      const bucket = this.buckets[i];
+      if (!bucket) continue;
+      let currentNode = bucket.head;
+      while (currentNode) {
+        let pair = [currentNode.key, currentNode.value];
+        entries.push(pair);
+        currentNode = currentNode.next;
+      }
+    }
+    return entries;
+  }
 }
 
-const hashMap = new HashMap(4, 0.75);
+const test = new HashMap(16, 0.75);
 
-hashMap.set("Messi", 10);
-hashMap.set("C. Ronaldo", 7);
-hashMap.set("Neymar Jr.", 11);
-hashMap.set("Xavi", 6);
-hashMap.set("Iniesta", 8);
-
-console.log(hashMap.get("Messi"));
-console.log(hashMap.has("C. Ronaldo"));
-console.log(hashMap.buckets);
-console.log(hashMap.size);
-console.log(hashMap.capacity);
+test.set("apple", "red");
+test.set("banana", "yellow");
+test.set("carrot", "orange");
+test.set("dog", "brown");
+test.set("elephant", "gray");
+test.set("frog", "green");
+test.set("grape", "purple");
+test.set("hat", "black");
+test.set("ice cream", "white");
+test.set("jacket", "blue");
+test.set("kite", "pink");
+test.set("lion", "golden");
