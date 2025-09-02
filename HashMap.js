@@ -229,11 +229,48 @@ class HashMap {
       this.resize();
     }
   }
+
+  get(key) {
+    let index = this.hash(key);
+    if (index < 0 || index >= this.capacity) {
+      throw new Error("Trying to access index out of bounds");
+    }
+    if (!this.buckets[index]) {
+      return null;
+    } else {
+      const list = this.buckets[index];
+      const node = list.findNodeByKey(key);
+      if (node) return node.value;
+      else return null;
+    }
+  }
+
+  has(key) {
+    let index = this.hash(key);
+    if (index < 0 || index >= this.capacity) {
+      throw new Error("Trying to access index out of bounds");
+    }
+    if (!this.buckets[index]) {
+      return false;
+    } else {
+      const list = this.buckets[index];
+      const node = list.findNodeByKey(key);
+      if (node) return true;
+      else return false;
+    }
+  }
 }
 
 const hashMap = new HashMap(4, 0.75);
-hashMap.set("", 1);
 
+hashMap.set("Messi", 10);
+hashMap.set("C. Ronaldo", 7);
+hashMap.set("Neymar Jr.", 11);
+hashMap.set("Xavi", 6);
+hashMap.set("Iniesta", 8);
+
+console.log(hashMap.get("Messi"));
+console.log(hashMap.has("C. Ronaldo"));
 console.log(hashMap.buckets);
 console.log(hashMap.size);
 console.log(hashMap.capacity);
